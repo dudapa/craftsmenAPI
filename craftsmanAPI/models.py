@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Skill(models.Model):
@@ -35,3 +36,13 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Review(models.Model):
+    craftsman = models.ForeignKey(Craftsman, on_delete=models.CASCADE)
+    author = models.CharField(max_length=255)
+    rating = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.author} {self.rating}'
