@@ -18,7 +18,7 @@ class Craftsman(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=64)
     address = models.CharField(max_length=255)
-    profile_picture = models.ImageField(upload_to='images/craftsmen/')
+    profile_picture = models.ImageField(upload_to='images/craftsmen/', null=True, blank=True)
     skills = models.ManyToManyField(Skill)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
