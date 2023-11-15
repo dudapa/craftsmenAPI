@@ -18,7 +18,7 @@ class Craftsman(models.Model):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=64)
     address = models.CharField(max_length=255)
-    profile_picture = models.ImageField()
+    profile_picture = models.ImageField(upload_to='images/craftmen/')
     skills = models.ManyToManyField(Skill)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,7 +30,7 @@ class Project(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     craftsman = models.ForeignKey(Craftsman, on_delete=models.CASCADE)
-    project_picture = models.ImageField()
+    project_picture = models.ImageField(upload_to='images/projects/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
