@@ -5,7 +5,7 @@ from .models import Craftsman, Project, Review, Skill
 class SkillSerializer(ModelSerializer):
     class Meta:
         model = Skill
-        fields = ['id', 'name', 'created_at', 'updated_at']
+        fields = ['id', 'name']
     
 class CraftsmanSerializer(ModelSerializer):
     skills = SkillSerializer(many=True, read_only=True)
