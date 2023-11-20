@@ -13,12 +13,22 @@ class CraftsmanSerializer(ModelSerializer):
         model = Craftsman
         fields = ['id', 'name', 'email', 'phone', 'address', 'profile_picture', 'skills', 'created_at', 'updated_at']
 
-class Project(ModelSerializer):
+class ProjectSerializer(ModelSerializer):
     class Meta:
         model = Project
         fields = ['id', 'title', 'description', 'craftsman', 'project_picture', 'created_at', 'updated_at']
+    
+    def create(self, validated_data):
+        craftsman_id = self.context['craftsman_id']
+        return Project.objects.create(craftsman_id=craftsman_id, **validated_data)
 
-class Review(ModelSerializer):
+class ReviewSerializer(ModelSerializer):
     class Meta: 
         model = Review
         fields = ['id', 'craftsman', 'author', 'rating', 'comment', 'created_at']
+    
+    def create(self, validated_data):
+        craftsman_id = self.context['craftsman_id']
+        return Review.objects.create(craftsman_id=craftsman_id, **validated_data)
+
+        
