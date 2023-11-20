@@ -10,6 +10,7 @@ django-debug-toolbar = "*"
 python-decouple = "*"
 mysqlclient = "*"
 pillow = "*"
+drf-nested-routers = "*"
 
 [dev-packages]
 
