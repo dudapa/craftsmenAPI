@@ -25,7 +25,7 @@ class ProjectSerializer(ModelSerializer):
 class ReviewSerializer(ModelSerializer):
     class Meta: 
         model = Review
-        fields = ['id', 'craftsman', 'author', 'rating', 'comment', 'created_at']
+        fields = ['id', 'craftsman', 'author', 'rating', 'comment', 'created_at', 'updated_at']
     
     def create(self, validated_data):
         craftsman_id = self.context['craftsman_id']

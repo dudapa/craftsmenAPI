@@ -43,6 +43,7 @@ class Review(models.Model):
     rating = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
         return f'{self.author} {self.rating}'
