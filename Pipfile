@@ -11,6 +11,7 @@ python-decouple = "*"
 mysqlclient = "*"
 pillow = "*"
 drf-nested-routers = "*"
+djoser = "*"
 
 [dev-packages]
 
