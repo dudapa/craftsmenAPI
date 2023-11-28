@@ -2,8 +2,8 @@ from django.shortcuts import render, HttpResponse
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Craftsman, Project, Review
-from .serializers import CraftsmanSerializer,ProjectSerializer, ReviewSerializer
+from .models import Craftsman, Project, Review, Skill
+from .serializers import CraftsmanSerializer,ProjectSerializer, ReviewSerializer, SkillSerializer
 
 
 class CraftsmanViewSet(viewsets.ModelViewSet):
@@ -34,3 +34,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
     def get_serializer_context(self):
         return {'craftsman_id': self.kwargs['craftsman_pk']}
+
+class SkillViewSet(viewsets.ModelViewSet):
+    queryset = Skill.objects.all()
+    serializer_class = SkillSerializer

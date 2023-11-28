@@ -5,6 +5,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register('craftsmen', views.CraftsmanViewSet, basename='craftsman')
+router.register('skills', views.SkillViewSet, basename='skill')
 
 craftsmen_router = routers.NestedDefaultRouter(router, 'craftsmen', lookup='craftsman')
 craftsmen_router.register('projects', views.ProjectViewSet, basename='craftsman-projects')
