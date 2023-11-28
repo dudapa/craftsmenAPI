@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -108,7 +109,16 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
    'AUTH_HEADER_TYPES': ('JWT',),
+}
+
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'craftsmanAPI.serializers.UserCreateSerializer',
+        'current_user': 'craftsmanAPI.serializers.UserSerializer',
+    }
 }
 
 # Internationalization
