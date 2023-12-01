@@ -21,7 +21,7 @@ class CraftsmanSerializer(ModelSerializer):
     skills = SkillSerializer(many=True, read_only=True)
     class Meta:
         model = Craftsman
-        fields = ['id', 'name', 'email', 'phone', 'address', 'profile_picture', 'skills', 'created_at', 'updated_at']
+        fields = ['id', 'user',  'name', 'email', 'phone', 'address', 'profile_picture', 'skills', 'created_at', 'updated_at']
 
 class ProjectSerializer(ModelSerializer):
     class Meta:
