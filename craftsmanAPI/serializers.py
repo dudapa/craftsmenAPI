@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, StringRelatedField
 from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
 from .models import Craftsman, Project, Review, Skill
 
@@ -7,7 +7,7 @@ class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         fields = ['id', 'username', 'email', 'first_name', 'last_name']
 
-class UserCreateSerializer(BaseUserSerializer):
+class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         fields = ['id', 'username', 'password',
                   'email', 'first_name', 'last_name']
@@ -18,7 +18,7 @@ class SkillSerializer(ModelSerializer):
         fields = ['id', 'name']
     
 class CraftsmanSerializer(ModelSerializer):
-    skills = SkillSerializer(many=True, read_only=True)
+    skills = SkillSerializer(many=True, required=False)
     class Meta:
         model = Craftsman
         fields = ['id', 'user',  'name', 'email', 'phone', 'address', 'profile_picture', 'skills', 'created_at', 'updated_at']

@@ -23,6 +23,35 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
             return Craftsman.objects.filter(user_id=int(user.id))
         return Craftsman.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        data = request.data[0]
+        user = request.user
+        new_craftsman = Craftsman.objects.create(user=user, name=data['name'], email=data['email'], phone=data['phone'], address=data['address'], profile_picture=data['profile_picture'])
+        new_craftsman.save()
+        
+        for skill in data['skills']:
+            skill_obj = Skill.objects.get(name=skill['name'])
+            new_craftsman.skills.add(skill_obj)
+        
+        serializer = CraftsmanSerializer(new_craftsman)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        craftsman = self.get_object()
+        data = request.data[0]
+        print(data)
+        craftsman.skills.set([])
+        for skill in data['skills']:
+            skill_obj = Skill.objects.get(name=skill['name'])
+            craftsman.skills.add(skill_obj)
+            print('it works2')
+
+        craftsman.save()
+        serializer = CraftsmanSerializer(craftsman)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
 
