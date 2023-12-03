@@ -9,7 +9,6 @@ from .permissions import IsAdminAndCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin
 
 
 class CraftsmanViewSet(viewsets.ModelViewSet):
-    # queryset = Craftsman.objects.all()
     serializer_class = CraftsmanSerializer
 
     def get_permissions(self):
