@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 from djoser.serializers import UserSerializer as BaseUserSerializer, UserCreateSerializer as BaseUserCreateSerializer
-from .models import Craftsman, Project, Review, Skill
+from .models import Craftsman, Project, Visitor, Review, Skill
 
 
 class UserSerializer(BaseUserSerializer):
@@ -31,6 +31,11 @@ class ProjectSerializer(ModelSerializer):
     def create(self, validated_data):
         craftsman_id = self.context['craftsman_id']
         return Project.objects.create(craftsman_id=craftsman_id, **validated_data)
+    
+class VisitorSerializer(ModelSerializer):
+    class Meta:
+        model = Visitor
+        fields = ['id', 'user', 'name', 'email', 'profile_picture', 'created_at', 'updated_at']
 
 class ReviewSerializer(ModelSerializer):
     class Meta: 
