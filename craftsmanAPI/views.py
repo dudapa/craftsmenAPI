@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from .models import Craftsman, Project, Review, Skill
 from .serializers import CraftsmanSerializer,ProjectSerializer, ReviewSerializer, SkillSerializer
-from .permissions import IsAdminAndCraftsmanOrReadOnly, OnlyCraftsman
+from .permissions import IsAdminAndCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin
 
 
 class CraftsmanViewSet(viewsets.ModelViewSet):
@@ -74,3 +74,4 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class SkillViewSet(viewsets.ModelViewSet):
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
+    permission_classes = [OnlyAdmin]
