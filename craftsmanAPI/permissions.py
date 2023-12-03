@@ -6,7 +6,7 @@ class IsAdminAndCraftsmanOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
-        return bool(request.user or request.user.is_staff)
+        return bool(request.user.is_authenticated or request.user.is_staff)
     
 class OnlyCraftsman(BasePermission):
     def has_permission(self, request, view):

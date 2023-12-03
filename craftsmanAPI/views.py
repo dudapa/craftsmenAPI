@@ -26,7 +26,14 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         data = request.data[0]
         user = request.user
-        new_craftsman = Craftsman.objects.create(user=user, name=data['name'], email=data['email'], phone=data['phone'], address=data['address'], profile_picture=data['profile_picture'])
+        new_craftsman = Craftsman.objects.create(
+            user=user, 
+            name=data['name'], 
+            email=data['email'], 
+            phone=data['phone'], 
+            address=data['address'], 
+            profile_picture=data['profile_picture']
+            )
         new_craftsman.save()
         
         for skill in data['skills']:
@@ -40,7 +47,6 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         craftsman = self.get_object()
         data = request.data[0]
-        print(data)
         craftsman.skills.set([])
         for skill in data['skills']:
             skill_obj = Skill.objects.get(name=skill['name'])
@@ -55,11 +61,32 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
 class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
 
+    def get_permissions(self):
+        if self.request.method == 'PUT' or self.request.method == 'POST':
+            return [OnlyCraftsman()]
+        return [IsAdminAndCraftsmanOrReadOnly()] 
+
     def get_queryset(self):
         return Project.objects.filter(craftsman_id=self.kwargs['craftsman_pk'])
 
     def get_serializer_context(self):
         return {'craftsman_id': self.kwargs['craftsman_pk']}
+    
+    def create(self, request, *args, **kwargs):
+        craftsman_id = self.kwargs['craftsman_pk']
+        craftsman = Craftsman.objects.get(pk=craftsman_id)
+        data = request.data
+        new_project = Project.objects.create(
+               title=data['title'],
+               description=data.get('description', None),
+               craftsman=craftsman,
+               project_picture=data.get('project_picture', None)
+        )
+        new_project.save()
+        serializer = ProjectSerializer(new_project)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
     
 
 class ReviewViewSet(viewsets.ModelViewSet):
