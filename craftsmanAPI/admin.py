@@ -5,7 +5,7 @@ from .models import Craftsman, Project, Review, Visitor, Skill
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'created_at')
-# Register your models here.
+
 @admin.register(Craftsman)
 class CraftsmanAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'email', 'phone')
