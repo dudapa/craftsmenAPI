@@ -1,5 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
+from django.contrib.auth.models import Group 
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,7 +22,8 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             user = self.request.user
-            print(user)
+            # print(Group.objects.all())
+            # print(user)
             if not user.is_anonymous:
                 return [Craftsman.objects.get(user=user)]
             return Craftsman.objects.all()
@@ -53,15 +55,23 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'You have already created craftsman profile'}, status=status.HTTP_400_BAD_REQUEST)
     
     def update(self, request, *args, **kwargs):
-        craftsman = self.get_object()
-        data = request.data[0]
-        craftsman.skills.set([])
-        for skill in data['skills']:
-            skill_obj = Skill.objects.get(name=skill['name'])
-            craftsman.skills.add(skill_obj)
+        craftsman = get_object_or_404(Craftsman, user=request.user)
+        data = request.data
 
-        craftsman.save()
-        serializer = CraftsmanSerializer(craftsman)
+        skills = None
+        if 'skills' in data:
+            skills = data.pop('skills')
+            craftsman.skills.set([])
+            for skill in skills:
+                skill_obj = Skill.objects.get(name=skill)
+                craftsman.skills.add(skill_obj)
+
+            craftsman.save()
+
+        serializer = CraftsmanSerializer(craftsman, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProjectViewSet(viewsets.ModelViewSet):
