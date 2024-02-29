@@ -46,7 +46,7 @@ class Visitor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    profile_picture = models.ImageField(upload_to='images/craftsmen/', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='images/visitor/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -55,7 +55,7 @@ class Visitor(models.Model):
     
 class Review(models.Model):
     craftsman = models.ForeignKey(Craftsman, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(Visitor, on_delete=models.CASCADE)
     rating = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
