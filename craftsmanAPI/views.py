@@ -133,8 +133,12 @@ class VisitorViewSet(viewsets.ModelViewSet):
         
     def get_queryset(self):
         try:
-            user = self.request.user
-            return Visitor.objects.filter(user=user)
+            if 'pk' in self.kwargs:
+                visitor_pk = int(self.kwargs['pk'])
+                return Visitor.objects.filter(pk=visitor_pk)
+            else:
+                user = self.request.user
+                return Visitor.objects.filter(user=user)
         except ObjectDoesNotExist:
             return Visitor.objects.all()
         
@@ -154,6 +158,18 @@ class VisitorViewSet(viewsets.ModelViewSet):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         except IntegrityError as e:
             return Response({'detail': 'You have already created visitor profile'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        data = request.data
+        data['user'] = user.id
+        visitor = get_object_or_404(Visitor, user=user)
+
+        serializer = VisitorSerializer(visitor, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
             
 
 class SkillViewSet(viewsets.ModelViewSet):

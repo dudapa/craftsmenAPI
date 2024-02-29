@@ -38,11 +38,14 @@ class OnlyAdmin(BasePermission):
     
 class OnlyAuthenticatedVisitor(BasePermission):
     def has_permission(self, request, view):
+        print('this works')
         if request.method in SAFE_METHODS:
             return True
         try:
             user = request.user
+            print('user: ', user)
             if not user.is_anonymous:
+                print('this works 2')
                 Visitor.objects.get(user=user)
                 return True
             return False
