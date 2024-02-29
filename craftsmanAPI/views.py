@@ -83,7 +83,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.request.method == 'PUT' or self.request.method == 'POST':
             return [OnlyCraftsman()]
-        return [IsAdminAndCraftsmanOrReadOnly()] 
+        return [IsAdminOrCraftsmanOrReadOnly()] 
 
     def get_queryset(self):
         return Project.objects.filter(craftsman_id=self.kwargs['craftsman_pk'])
@@ -122,10 +122,8 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class VisitorViewSet(viewsets.ModelViewSet):
     serializer_class = VisitorSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def get_permissions(self):
-
         if self.request.method == 'POST':
             return [IsAuthenticated()]
         elif self.request.method == 'PUT':
@@ -136,21 +134,26 @@ class VisitorViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
             user = self.request.user
-            Visitor.objects.filter(user=user)
-            return Visitor.objects.all()
+            return Visitor.objects.filter(user=user)
         except ObjectDoesNotExist:
             return Visitor.objects.all()
         
     def create(self, request, *args, **kwargs):
-        user = self.request.user
-        if not user.is_anonymous and not user.is_staff:
-            data = request.data
-            data['user'] = user.id
-            serializer = VisitorSerializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        try:
+            user = self.request.user
+            if not user.is_anonymous and not user.is_staff:
+                data = request.data
+                data['user'] = user.id
+                serializer = VisitorSerializer(data=data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+
+                # Assign visitor group to user
+                visitor_group = Group.objects.get(name='visitor')
+                user.groups.add(visitor_group)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except IntegrityError as e:
+            return Response({'detail': 'You have already created visitor profile'}, status=status.HTTP_400_BAD_REQUEST)
             
 
 class SkillViewSet(viewsets.ModelViewSet):
