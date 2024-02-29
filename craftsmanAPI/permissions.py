@@ -3,14 +3,16 @@ from rest_framework.permissions import BasePermission
 from .models import Craftsman, Visitor
 
 
-class IsAdminAndCraftsmanOrReadOnly(BasePermission):
+class IsAdminOrCraftsmanOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         if request.method in SAFE_METHODS:
             return True
         try:
             user = request.user
-            Craftsman.objects.get(user=user)
-            is_craftsman = True
+            is_craftsman = False
+            if not user.is_anonymous:
+                Craftsman.objects.get(user=user)
+                is_craftsman = True
         except Craftsman.DoesNotExist:
             is_craftsman = False
         return bool(is_craftsman or request.user.is_staff)

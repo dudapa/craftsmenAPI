@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
-from django.contrib.auth.models import Group 
+from django.contrib.auth.models import Group
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Craftsman, Project, Review, Skill, Visitor
 from .serializers import CraftsmanSerializer,ProjectSerializer, ReviewSerializer, SkillSerializer, VisitorSerializer
-from .permissions import IsAdminAndCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin, OnlyAuthenticatedVisitor, IsAdminOrAuthenticatedVisitor
+from .permissions import IsAdminOrCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin, OnlyAuthenticatedVisitor, IsAdminOrAuthenticatedVisitor
 
 
 class CraftsmanViewSet(viewsets.ModelViewSet):
@@ -16,16 +16,14 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.request.method == 'PUT' or self.request.method == 'POST':
-            return [IsAuthenticated()]
-        return [IsAdminAndCraftsmanOrReadOnly()] 
+            return [OnlyCraftsman()]
+        return [IsAdminOrCraftsmanOrReadOnly()] 
 
     def get_queryset(self):
         try:
             user = self.request.user
-            # print(Group.objects.all())
-            # print(user)
             if not user.is_anonymous:
-                return [Craftsman.objects.get(user=user)]
+                return Craftsman.objects.filter(user=user)
             return Craftsman.objects.all()
         except ObjectDoesNotExist:
             return Craftsman.objects.all()
@@ -44,9 +42,14 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
                 )
             new_craftsman.save()
 
+            # Add skills to new craftsman
             for skill in data['skills']:
                 skill_obj = Skill.objects.get(name=skill)
                 new_craftsman.skills.add(skill_obj)
+
+            # Assign craftsman group to user
+            craftsman_group = Group.objects.get(name='craftsman')
+            user.groups.add(craftsman_group)
             
             serializer = CraftsmanSerializer(new_craftsman)
 
