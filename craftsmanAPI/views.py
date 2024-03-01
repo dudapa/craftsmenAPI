@@ -15,7 +15,9 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
     serializer_class = CraftsmanSerializer
 
     def get_permissions(self):
-        if self.request.method == 'PUT' or self.request.method == 'POST':
+        if self.request.method == 'POST':
+            return [IsAuthenticated()]
+        if self.request.method == 'PUT':
             return [OnlyCraftsman()]
         return [IsAdminOrCraftsmanOrReadOnly()] 
 

@@ -19,16 +19,21 @@ class IsAdminOrCraftsmanOrReadOnly(BasePermission):
     
 class OnlyCraftsman(BasePermission):
     def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
-            return True
-        try:
-            user = request.user
-            if not user.is_anonymous:
-                Craftsman.objects.get(user=user)
-                return True
+        user = request.user
+
+        if user.is_anonymous:
             return False
-        except Craftsman.DoesNotExist:
-            return False
+
+        if 'pk' in view.kwargs:
+            try:
+                craftsman1 = Craftsman.objects.get(user=user)
+                craftsman2 = Craftsman.objects.get(pk=int(view.kwargs['pk']))
+                if craftsman1 == craftsman2:
+                    return True
+                else: 
+                    return False
+            except Craftsman.DoesNotExist:
+                return False
 
 class OnlyAdmin(BasePermission):
     def has_permission(self, request, view):

@@ -29,7 +29,7 @@ class Craftsman(models.Model):
         verbose_name_plural = 'craftsmen'
 
     def __str__(self):
-        return f'{self.user.first_name} '
+        return f'{self.user.first_name}'
     
 class Project(models.Model):
     title = models.CharField(max_length=255)
