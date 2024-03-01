@@ -36,18 +36,22 @@ class OnlyAdminOrCraftsman(BasePermission):
                 return False
             
             
-    
 class OnlyCraftsman(BasePermission):
     def has_permission(self, request, view):
         user = request.user
 
         if user.is_anonymous:
             return False
-
-        if 'pk' in view.kwargs:
+        print(view.kwargs)
+        if 'craftsman_pk' in view.kwargs or 'pk' in view.kwargs:
             try:
+                pk = None
+                if 'craftsman_pk' in view.kwargs:
+                    pk = int(view.kwargs['craftsman_pk'])
+                else:
+                    pk = int(view.kwargs['pk'])
                 craftsman1 = Craftsman.objects.get(user=user)
-                craftsman2 = Craftsman.objects.get(pk=int(view.kwargs['pk']))
+                craftsman2 = Craftsman.objects.get(pk=pk)
                 if craftsman1 == craftsman2:
                     return True
                 else: 
