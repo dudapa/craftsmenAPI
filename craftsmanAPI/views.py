@@ -121,6 +121,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
         return {'craftsman_id': self.kwargs['craftsman_pk']}
 
 class VisitorViewSet(viewsets.ModelViewSet):
+    queryset = Visitor.objects.all()
     serializer_class = VisitorSerializer
 
     def get_permissions(self):
@@ -130,17 +131,21 @@ class VisitorViewSet(viewsets.ModelViewSet):
             return [OnlyAuthenticatedVisitor()]
         else:
             return [IsAdminOrAuthenticatedVisitor()]
+            # if 'pk' in self.kwargs:
+            #     return [IsAdminOrAuthenticatedVisitor()]
+            # print('this works')
+            # return [IsAdminUser()]
         
-    def get_queryset(self):
-        try:
-            if 'pk' in self.kwargs:
-                visitor_pk = int(self.kwargs['pk'])
-                return Visitor.objects.filter(pk=visitor_pk)
-            else:
-                user = self.request.user
-                return Visitor.objects.filter(user=user)
-        except ObjectDoesNotExist:
-            return Visitor.objects.all()
+    # def get_queryset(self):
+    #     try:
+    #         if 'pk' in self.kwargs:
+    #             visitor_pk = int(self.kwargs['pk'])
+    #             return Visitor.objects.filter(pk=visitor_pk)
+    #         else:
+    #             user = self.request.user
+    #             return Visitor.objects.filter(user=user)
+    #     except ObjectDoesNotExist:
+    #         return Visitor.objects.all()
         
     def create(self, request, *args, **kwargs):
         try:

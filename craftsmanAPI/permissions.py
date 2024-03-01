@@ -38,28 +38,49 @@ class OnlyAdmin(BasePermission):
     
 class OnlyAuthenticatedVisitor(BasePermission):
     def has_permission(self, request, view):
-        print('this works')
-        if request.method in SAFE_METHODS:
-            return True
         try:
-            user = request.user
-            print('user: ', user)
-            if not user.is_anonymous:
-                print('this works 2')
-                Visitor.objects.get(user=user)
-                return True
-            return False
+            if 'pk' in view.kwargs:
+                # Visitor obtained from authenticated user
+                visitor1 = Visitor.objects.get(user=request.user)
+                # Visitor obtained from pk in url
+                visitor2 = Visitor.objects.get(pk=int(view.kwargs['pk']))
+                if visitor1 == visitor2:
+                    return True
+                else:
+                    return False
         except Visitor.DoesNotExist:
             return False
         
+# class IsAdminOrAuthenticatedVisitor(BasePermission):
+#     def has_permission(self, request, view):
+#         try:
+#             user = request.user
+#             if user.is_anonymous:
+#                 return False
+#             Visitor.objects.get(user=user)
+#             is_visitor = True
+#         except Visitor.DoesNotExist:
+#             is_visitor = False
+#         return bool(is_visitor or request.user.is_staff)
+    
 class IsAdminOrAuthenticatedVisitor(BasePermission):
     def has_permission(self, request, view):
-        try:
             user = request.user
+            print(user.is_staff)
             if user.is_anonymous:
                 return False
-            Visitor.objects.get(user=user)
-            is_visitor = True
-        except Visitor.DoesNotExist:
-            is_visitor = False
-        return bool(is_visitor or request.user.is_staff)
+            if user.is_staff:
+                print('this works')
+                return True
+            if 'pk' in view.kwargs:
+                try:
+                    # Visitor obtained from authenticated user
+                    visitor1 = Visitor.objects.get(user=user)
+                    # Visitor obtained from pk in url
+                    visitor2 = Visitor.objects.get(pk=int(view.kwargs['pk']))
+                    if visitor1 == visitor2:
+                        return True
+                    else:
+                        return False
+                except Visitor.DoesNotExist:
+                    return False
