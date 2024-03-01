@@ -8,10 +8,11 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Craftsman, Project, Review, Skill, Visitor
 from .serializers import CraftsmanSerializer,ProjectSerializer, ReviewSerializer, SkillSerializer, VisitorSerializer
-from .permissions import IsAdminOrCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin, OnlyAuthenticatedVisitor, IsAdminOrAuthenticatedVisitor
+from .permissions import IsAdminOrCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin, OnlyAuthenticatedVisitor, IsAdminOrAuthenticatedVisitor, OnlyAdminOrCraftsman
 
 
 class CraftsmanViewSet(viewsets.ModelViewSet):
+    queryset = Craftsman.objects.all()
     serializer_class = CraftsmanSerializer
 
     def get_permissions(self):
@@ -19,16 +20,18 @@ class CraftsmanViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated()]
         if self.request.method == 'PUT':
             return [OnlyCraftsman()]
-        return [IsAdminOrCraftsmanOrReadOnly()] 
+        if self.request.method == 'DELETE':
+            return [OnlyAdminOrCraftsman()]
+        return [IsAuthenticated()] 
 
-    def get_queryset(self):
-        try:
-            user = self.request.user
-            if not user.is_anonymous:
-                return Craftsman.objects.filter(user=user)
-            return Craftsman.objects.all()
-        except ObjectDoesNotExist:
-            return Craftsman.objects.all()
+    # def get_queryset(self):
+    #     try:
+    #         user = self.request.user
+    #         if not user.is_anonymous:
+    #             return Craftsman.objects.filter(user=user)
+    #         return Craftsman.objects.all()
+    #     except ObjectDoesNotExist:
+    #         return Craftsman.objects.all()
 
     def create(self, request, *args, **kwargs):
         try:
