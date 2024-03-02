@@ -24,10 +24,15 @@ class OnlyAdminOrCraftsman(BasePermission):
             return False
         if user.is_staff:
             return True
-        if 'pk' in view.kwargs:
+        if 'craftsman_pk' in view.kwargs or 'pk' in view.kwargs:
             try:
+                pk = None
+                if 'craftsman_pk' in view.kwargs:
+                    pk = int(view.kwargs['craftsman_pk'])
+                else:
+                    pk = int(view.kwargs['pk'])
                 craftsman1 = Craftsman.objects.get(user=user)
-                craftsman2 = Craftsman.objects.get(pk=view.kwargs['pk'])
+                craftsman2 = Craftsman.objects.get(pk=pk)
                 if craftsman1 == craftsman2:
                     return True
                 else:
