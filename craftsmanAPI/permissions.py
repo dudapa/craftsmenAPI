@@ -42,7 +42,6 @@ class OnlyCraftsman(BasePermission):
 
         if user.is_anonymous:
             return False
-        print(view.kwargs)
         if 'craftsman_pk' in view.kwargs or 'pk' in view.kwargs:
             try:
                 pk = None

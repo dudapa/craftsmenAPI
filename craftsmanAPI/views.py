@@ -95,23 +95,18 @@ class ProjectViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Project.objects.filter(craftsman_id=self.kwargs['craftsman_pk'])
 
-    def get_serializer_context(self):
-        return {'craftsman_id': self.kwargs['craftsman_pk']}
+    # def get_serializer_context(self):
+    #     return {'craftsman_id': self.kwargs['craftsman_pk']}
     
-    # def create(self, request, *args, **kwargs):
-    #     craftsman_id = self.kwargs['craftsman_pk']
-    #     craftsman = Craftsman.objects.get(pk=craftsman_id)
-    #     data = request.data
-    #     new_project = Project.objects.create(
-    #            title=data['title'],
-    #            description=data.get('description', None),
-    #            craftsman=craftsman,
-    #            project_picture=data.get('project_picture', None)
-    #     )
-    #     new_project.save()
-    #     serializer = ProjectSerializer(new_project)
+    def create(self, request, *args, **kwargs):
+        craftsman_id = self.kwargs['craftsman_pk']
+        data = request.data
+        data['craftsman'] = craftsman_id
+        serializer = ProjectSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
