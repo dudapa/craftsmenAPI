@@ -107,6 +107,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        data['craftsman'] = kwargs['craftsman_pk']
+        project = get_object_or_404(Project, pk=kwargs['pk'])
+        serializer = ProjectSerializer(project, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
         
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
