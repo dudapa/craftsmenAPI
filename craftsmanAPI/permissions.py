@@ -68,6 +68,20 @@ class OnlyAdmin(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return bool(request.user.is_authenticated and request.user.is_staff)
+
+
+class OnlyAuthenticatedVisitorCanWriteReview(BasePermission):
+    def has_permission(self, request, view):
+        user = request.user
+        if user.is_anonymous:
+            return False
+        try:
+           Visitor.objects.get(user=user)
+           return True 
+        except Visitor.DoesNotExist:
+            return False
+        
+        
     
 class OnlyAuthenticatedVisitor(BasePermission):
     def has_permission(self, request, view):

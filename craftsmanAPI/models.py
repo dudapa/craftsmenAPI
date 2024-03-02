@@ -55,7 +55,7 @@ class Visitor(models.Model):
     
 class Review(models.Model):
     craftsman = models.ForeignKey(Craftsman, on_delete=models.CASCADE)
-    author = models.ForeignKey(Visitor, on_delete=models.CASCADE)
+    author = models.OneToOneField(Visitor, on_delete=models.CASCADE)
     rating = models.SmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from django.core.exceptions import ObjectDoesNotExist
 from .models import Craftsman, Project, Review, Skill, Visitor
 from .serializers import CraftsmanSerializer,ProjectSerializer, ReviewSerializer, SkillSerializer, VisitorSerializer
-from .permissions import IsAdminOrCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin, OnlyAuthenticatedVisitor, IsAdminOrAuthenticatedVisitor, OnlyAdminOrCraftsman
+from .permissions import IsAdminOrCraftsmanOrReadOnly, OnlyCraftsman, OnlyAdmin, OnlyAuthenticatedVisitor, IsAdminOrAuthenticatedVisitor, OnlyAdminOrCraftsman, OnlyAuthenticatedVisitorCanWriteReview
 
 
 class CraftsmanViewSet(viewsets.ModelViewSet):
@@ -123,15 +123,30 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
 
     def get_permissions(self):
-        if self.request.method == 'PUT' or self.request.method == 'POST':
-            return [OnlyAuthenticatedVisitor()]
+        if self.request.method == 'POST':
+            return [OnlyAuthenticatedVisitorCanWriteReview()]
         return [AllowAny()] 
 
     def get_queryset(self):
         return Review.objects.filter(craftsman_id=self.kwargs['craftsman_pk'])
 
-    def get_serializer_context(self):
-        return {'craftsman_id': self.kwargs['craftsman_pk']}
+    # def get_serializer_context(self):
+    #     return {'craftsman_id': self.kwargs['craftsman_pk']}
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        author = Visitor.objects.get(user=request.user)
+        
+        craftsman_id = kwargs['craftsman_pk']
+
+        data['author'] = author.id
+        data['craftsman'] = craftsman_id
+
+        serializer = ReviewSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(data=data, status=status.HTTP_201_CREATED)
 
 class VisitorViewSet(viewsets.ModelViewSet):
     queryset = Visitor.objects.all()
