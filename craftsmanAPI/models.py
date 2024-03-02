@@ -33,7 +33,7 @@ class Craftsman(models.Model):
     
 class Project(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField(default=None)
+    description = models.TextField(default='')
     craftsman = models.ForeignKey(Craftsman, on_delete=models.CASCADE)
     project_picture = models.ImageField(upload_to='images/projects/', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
