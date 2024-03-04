@@ -1,6 +1,6 @@
 from rest_framework.permissions import SAFE_METHODS
 from rest_framework.permissions import BasePermission
-from .models import Craftsman, Visitor
+from .models import Craftsman, Visitor, Review
 
 
 class IsAdminOrCraftsmanOrReadOnly(BasePermission):
@@ -76,9 +76,18 @@ class OnlyAuthenticatedVisitorCanWriteReview(BasePermission):
         if user.is_anonymous:
             return False
         try:
-           Visitor.objects.get(user=user)
-           return True 
+            if 'pk' in view.kwargs:
+                review = Review.objects.get(pk=view.kwargs['pk'])
+                curent_visitor = Visitor.objects.get(user=user)
+                if curent_visitor == review.author:
+                    return True
+                else:
+                    return False
+            Visitor.objects.get(user=user)
+            return True 
         except Visitor.DoesNotExist:
+            return False
+        except Review.DoesNotExist:
             return False
         
         

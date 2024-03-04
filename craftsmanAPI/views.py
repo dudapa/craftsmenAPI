@@ -123,7 +123,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
 
     def get_permissions(self):
-        if self.request.method == 'POST':
+        if self.request.method == 'POST' or self.request.method == 'PUT':
             return [OnlyAuthenticatedVisitorCanWriteReview()]
         return [AllowAny()] 
 
@@ -147,6 +147,26 @@ class ReviewViewSet(viewsets.ModelViewSet):
         serializer.save()
 
         return Response(data=data, status=status.HTTP_201_CREATED)
+    
+    def update(self, request, *args, **kwargs):
+        user = request.user
+        author = Visitor.objects.get(user=user)
+        craftsman_pk = kwargs['craftsman_pk']
+        data = request.data
+        
+        data['craftsman'] = craftsman_pk
+        data['author'] = author.id
+
+        pk = kwargs['pk']
+        review = Review.objects.get(pk=pk)
+
+        serializer = ReviewSerializer(review, data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+
 
 class VisitorViewSet(viewsets.ModelViewSet):
     queryset = Visitor.objects.all()
