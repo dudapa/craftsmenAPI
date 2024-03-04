@@ -28,11 +28,6 @@ class ProjectSerializer(ModelSerializer):
         model = Project
         fields = ['id', 'title', 'description', 'craftsman', 'project_picture', 'created_at', 'updated_at']
     
-    # def create(self, validated_data):
-    #     print('serializer', self.context)
-    #     craftsman_id = self.context['craftsman_id']
-    #     return Project.objects.create(craftsman_id=craftsman_id, **validated_data)
-    
 class VisitorSerializer(ModelSerializer):
     class Meta:
         model = Visitor
@@ -42,9 +37,3 @@ class ReviewSerializer(ModelSerializer):
     class Meta: 
         model = Review
         fields = ['id', 'craftsman', 'author', 'rating', 'comment', 'created_at', 'updated_at']
-    
-    # def create(self, validated_data):
-    #     craftsman_id = self.context['craftsman_id']
-    #     return Review.objects.create(craftsman_id=craftsman_id, **validated_data)
-
-        

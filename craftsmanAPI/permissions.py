@@ -89,9 +89,7 @@ class OnlyAuthenticatedVisitorCanWriteReview(BasePermission):
             return False
         except Review.DoesNotExist:
             return False
-        
-        
-    
+         
 class OnlyAuthenticatedVisitor(BasePermission):
     def has_permission(self, request, view):
         try:
@@ -106,19 +104,7 @@ class OnlyAuthenticatedVisitor(BasePermission):
                     return False
         except Visitor.DoesNotExist:
             return False
-        
-# class IsAdminOrAuthenticatedVisitor(BasePermission):
-#     def has_permission(self, request, view):
-#         try:
-#             user = request.user
-#             if user.is_anonymous:
-#                 return False
-#             Visitor.objects.get(user=user)
-#             is_visitor = True
-#         except Visitor.DoesNotExist:
-#             is_visitor = False
-#         return bool(is_visitor or request.user.is_staff)
-    
+ 
 class IsAdminOrAuthenticatedVisitor(BasePermission):
     def has_permission(self, request, view):
             user = request.user
@@ -138,3 +124,4 @@ class IsAdminOrAuthenticatedVisitor(BasePermission):
                         return False
                 except Visitor.DoesNotExist:
                     return False
+                

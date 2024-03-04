@@ -21,3 +21,4 @@ class VisitorAdmin(admin.ModelAdmin):
 @admin.register(Review)
 class ReviewModel(admin.ModelAdmin):
     list_display = ('id', 'craftsman', 'author', 'rating')
+    
