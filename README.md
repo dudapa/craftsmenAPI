@@ -19,20 +19,20 @@ Make sure you have [Python](https://www.python.org/) and [pipenv](https://pipenv
 
 ### Installation
 
-1. Clone the repository:__
-   git clone https://github.com/your-username/craftsmen-rest-api.git__
+1. Clone the repository:<br/>
+   git clone https://github.com/your-username/craftsmen-rest-api.git<br/>
    cd craftsmen-rest-api
 
-2. Install dependencies using pipenv:__
+2. Install dependencies using pipenv:<br/>
    pipenv install
 
-3. Activate the virtual:__
+3. Activate the virtual:<br/>
    pipenv shell
 
-4. Apply database migrations:__
+4. Apply database migrations:<br/>
    python manage.py migrate
 
-5. Run development server:
+5. Run development server:<br/>
    python manage.py runserver
 
 
