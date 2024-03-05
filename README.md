@@ -16,7 +16,7 @@ Craftsmen REST API is a Django and Django REST framework-based project designed 
 ### Craftsmen
 
 - List all and create craftsmen: [http://127.0.0.1:8000/api/v1/craftsmen/](http://127.0.0.1:8000/api/v1/craftsmen/)
-- Retrieve, update and delete a specific craftsman: http://127.0.0.1:8000/api/v1/craftsmen/\<pk\>/
+- Retrieve, update and delete a specific craftsman: http://127.0.0.1:8000/api/v1/craftsmen/<pk\>/
 - List all and create projects for a craftsman: [http://127.0.0.1:8000/api/v1/craftsmen/<pk>/projects/](http://127.0.0.1:8000/api/v1/craftsmen/<pk>/projects/)
 - Retrieve, update and delete a specific project for a craftsman: [http://127.0.0.1:8000/api/v1/craftsmen/<pk>/projects/<pk>/](http://127.0.0.1:8000/api/v1/craftsmen/<pk>/projects/<pk>/)
 - List all and create reviews for a craftsman: [http://127.0.0.1:8000/api/v1/craftsmen/<pk>/reviews/](http://127.0.0.1:8000/api/v1/craftsmen/<pk>/reviews/)
