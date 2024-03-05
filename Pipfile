@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 django = "*"
 djangorestframework = "*"
-django-debug-toolbar = "*"
 python-decouple = "*"
 mysqlclient = "*"
 pillow = "*"
@@ -15,6 +14,7 @@ djoser = "*"
 djangorestframework-simplejwt = "*"
 
 [dev-packages]
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.9"
